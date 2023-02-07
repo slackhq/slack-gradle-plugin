@@ -22,6 +22,7 @@ import com.google.auto.service.AutoService
 import org.gradle.api.tasks.testing.Test
 import slack.gradle.agp.AgpHandler
 import slack.gradle.agp.AgpHandlerFactory
+import slack.gradle.agp.AgpSettingsHandler
 import slack.gradle.agp.VersionNumber
 
 @AutoService(AgpHandlerFactory::class)
@@ -30,9 +31,9 @@ public class AgpHandlerFactory80 : AgpHandlerFactory {
 
   override fun currentVersion(): String = ANDROID_GRADLE_PLUGIN_VERSION
 
-  override fun create(): AgpHandler {
-    return AgpHandler80()
-  }
+  override fun createHandler(): AgpHandler = AgpHandler80()
+
+  override fun createSettingsHandler(): AgpSettingsHandler = AgpSettingsHandler80()
 }
 
 private class AgpHandler80 : AgpHandler {

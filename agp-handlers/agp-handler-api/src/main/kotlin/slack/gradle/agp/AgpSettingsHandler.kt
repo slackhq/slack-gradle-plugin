@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Slack Technologies, LLC
+ * Copyright (C) 2023 Slack Technologies, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package slack.gradle
+package slack.gradle.agp
 
-import slack.gradle.agp.AgpHandlerFactory
-import slack.gradle.agp.VersionNumber
+import org.gradle.api.initialization.Settings
 
-private data class FactoryData(val agpVersion: VersionNumber, val factory: AgpHandlerFactory)
+/** An AgpHandler for Gradle [Settings] plugin configuration. */
+public interface AgpSettingsHandler {
+  public fun apply(settings: Settings)
+
+  public companion object {
+    internal val NoOp =
+      object : AgpSettingsHandler {
+        override fun apply(settings: Settings) {}
+      }
+  }
+}

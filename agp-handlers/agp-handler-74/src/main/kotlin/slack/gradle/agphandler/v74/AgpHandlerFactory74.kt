@@ -32,9 +32,7 @@ public class AgpHandlerFactory74 : AgpHandlerFactory {
 
   override fun currentVersion(): String = ANDROID_GRADLE_PLUGIN_VERSION
 
-  override fun create(): AgpHandler {
-    return AgpHandler74()
-  }
+  override fun createHandler(): AgpHandler = AgpHandler74()
 }
 
 private class AgpHandler74 : AgpHandler {
