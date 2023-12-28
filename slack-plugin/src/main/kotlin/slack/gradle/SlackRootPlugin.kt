@@ -367,7 +367,7 @@ internal class SlackRootPlugin @Inject constructor(private val buildFeatures: Bu
       }
     }
 
-    AndroidTestApksTask.register(project)
+    AndroidTestApksTask.register(project, slackProperties)
   }
 
   private fun isStable(version: String): Boolean {
