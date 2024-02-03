@@ -22,6 +22,8 @@ import com.android.build.api.variant.TestAndroidComponentsExtension
 import com.google.common.base.CaseFormat
 import java.io.File
 import java.util.Locale
+import java.util.Optional
+import kotlin.jvm.optionals.getOrNull
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -207,6 +209,28 @@ internal val Project.multiplatformExtension
 /** Returns a map of module identifiers to toml library reference aliases */
 internal fun VersionCatalog.identifierMap(): Map<String, String> {
   return libraryAliases.associateBy { findLibrary(it).get().get().module.toString() }
+}
+
+/**
+ * Returns a [Provider] of a mapping of module dependencies to their version catalog aliases.
+ *
+ * If no version catalogs are found, an empty map will be returned.
+ */
+internal fun Project.versionCatalogsMappingProvider(): Provider<Map<String, String>> {
+  val catalogExtension =
+    extensions.findByType<VersionCatalogsExtension>() ?: return provider { emptyMap() }
+  return catalogExtension.catalogNames
+    .map(catalogExtension::find)
+    .mapNotNull(Optional<VersionCatalog>::getOrNull)
+    .let { catalogs ->
+      project.provider {
+        buildMap {
+          for (catalog in catalogs) {
+            putAll(catalog.identifierMap().mapValues { (_, v) -> "${catalog.name}.$v" })
+          }
+        }
+      }
+    }
 }
 
 /**
