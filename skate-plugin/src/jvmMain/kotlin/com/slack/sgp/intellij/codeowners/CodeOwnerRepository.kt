@@ -17,6 +17,7 @@ package com.slack.sgp.intellij.codeowners
 
 import com.intellij.openapi.diagnostic.logger
 import java.io.FileNotFoundException
+import java.util.Collections.emptyMap
 
 /**
  * CodeOwnerRepository is responsible for reading and caching the code owners info from the csv
