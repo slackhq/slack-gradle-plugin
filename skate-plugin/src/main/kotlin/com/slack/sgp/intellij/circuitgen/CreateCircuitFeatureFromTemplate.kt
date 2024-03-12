@@ -16,7 +16,12 @@ import java.util.Properties
 
 class CreateCircuitFeatureFromTemplate: CreateFileFromTemplateAction("New Circuit Feature", "Create Circuit Feature", KotlinFileType.INSTANCE.icon) {
   override fun buildDialog(project: Project, directory: PsiDirectory, builder: CreateFileFromTemplateDialog.Builder) {
-    builder.setTitle("Circuit Feature")
+    builder.setTitle("New Kotlin File/Class")
+      .addKind("File", KotlinFileType.INSTANCE.icon, "Kotlin File")
+      .addKind("Class", KotlinFileType.INSTANCE.icon, "Kotlin Class")
+      .addKind("Interface", KotlinFileType.INSTANCE.icon, "Kotlin Interface")
+      .addKind("Enum class", KotlinFileType.INSTANCE.icon, "Kotlin Enum")
+      .addKind("Object", KotlinFileType.INSTANCE.icon, "Kotlin Object")
   }
 
   override fun getActionName(directory: PsiDirectory?, newName: String, templateName: String?): String {
