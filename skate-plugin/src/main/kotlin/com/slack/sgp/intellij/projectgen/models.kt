@@ -22,8 +22,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiManager
+import com.slack.sgp.intellij.circuitgen.CreateCircuitFeatureFromTemplate
 import com.slack.sgp.intellij.projectgen.ProjectGenPresenter
 import com.squareup.kotlinpoet.FileSpec
+import org.jetbrains.kotlin.idea.kdoc.each
 import java.io.File
 import java.util.*
 
@@ -260,18 +262,18 @@ internal data class KotlinFeature(val packageName: String, val isAndroid: Boolea
 }
 private fun writePlaceholderFileTo(sourceSetDir: File, packageName: String) {
   print(sourceSetDir.name + packageName)
-//  val mainSrcDir =
-//    sourceSetDir.resolve("kotlin/${packageName.replace(".", "/")}").apply { mkdirs() }
-//  File(mainSrcDir, "Placeholder.kt")
-//    .writeText(
-//      """
-//      package $packageName
-//
-//      /** This file exists just to create your new project's directories. Rename or delete this! */
-//      private abstract class Placeholder
-//      """
-//        .trimIndent()
-//    )
+  val mainSrcDir =
+    sourceSetDir.resolve("kotlin/${packageName.replace(".", "/")}").apply { mkdirs() }
+  File(mainSrcDir, "Placeholder.kt")
+    .writeText(
+      """
+      package $packageName
+
+      /** This file exists just to create your new project's directories. Rename or delete this! */
+      private abstract class Placeholder
+      """
+        .trimIndent()
+    )
 }
 
 internal data class DaggerFeature(val runtimeOnly: Boolean) : Feature, SlackFeatureVisitor {
@@ -304,28 +306,19 @@ internal class CircuitFeature(private val packageName: String, private val proje
   }
 
   override fun renderFiles(projectDir: File) {
-    logger<ProjectGenPresenter>().info("IN HERERER GENERATING LINH")
-    logger<ProjectGenPresenter>().info(projectDir.absolutePath)
     val path = projectDir.resolve("src/main").resolve("kotlin/${packageName.replace(".", "/")}")
     path.mkdirs()
-    logger<ProjectGenPresenter>().info(path.path)
-    logger<ProjectGenPresenter>().info(path.absolutePath)
-    val template = FileTemplateManager.getInstance(project)
-    val fullTemplate = template.getTemplate("Circuit feature (Presenter + Compose UI).kt")
-    val defaultProperties = FileTemplateManager.getInstance(project).defaultProperties
-    logger<ProjectGenPresenter>().info("IN HERERER GENERATING3")
-    logger<ProjectGenPresenter>().info(defaultProperties.toString())
-    val props = Properties(defaultProperties)
-    props.setProperty("NAME", "LinhTest")
-    val localFolder = LocalFileSystem.getInstance().findFileByPath(projectDir.absolutePath)
-    if (localFolder != null) {
-      logger<ProjectGenPresenter>().info("INSIDE IF STATEMENT")
-      logger<ProjectGenPresenter>().info(localFolder.path)
+    val templates = FileTemplateManager.getInstance(project).allTemplates
+    templates.forEach { template ->
+      if (template.name.contains("Circuit feature (Presenter + Compose UI)")) {
+        logger<ProjectGenPresenter>().info("IN HERERER GENERATING3")
+        logger<ProjectGenPresenter>().info(template.name)
+        val defaultProperties = FileTemplateManager.getInstance(project).defaultProperties
+        val localFolder = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(path)
+        val psiDir = PsiManager.getInstance(project).findDirectory(localFolder!!) as PsiDirectory
+        FileTemplateUtil.createFromTemplate(template, defaultProperties.getProperty("NAME"), defaultProperties, psiDir)
+        }
     }
-    val psiDir = PsiManager.getInstance(project).findDirectory(localFolder!!) as PsiDirectory
-    logger<ProjectGenPresenter>().info("IN HERERER GENERATING5")
-    logger<ProjectGenPresenter>().info(psiDir.toString())
-    FileTemplateUtil.createFromTemplate(fullTemplate, "main.kt", props, psiDir)
   }
 }
 

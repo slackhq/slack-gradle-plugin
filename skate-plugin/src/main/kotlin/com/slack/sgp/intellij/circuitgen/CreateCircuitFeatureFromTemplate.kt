@@ -14,6 +14,7 @@ import com.intellij.psi.PsiFile
 import org.jetbrains.kotlin.idea.KotlinFileType
 import java.util.Properties
 
+
 class CreateCircuitFeatureFromTemplate: CreateFileFromTemplateAction("New Circuit Feature", "Create Circuit Feature", KotlinFileType.INSTANCE.icon) {
   override fun buildDialog(project: Project, directory: PsiDirectory, builder: CreateFileFromTemplateDialog.Builder) {
     builder.setTitle("New Circuit File/Class")
