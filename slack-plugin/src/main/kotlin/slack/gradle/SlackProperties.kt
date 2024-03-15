@@ -292,6 +292,13 @@ internal constructor(
     get() = booleanProperty("sgp.lint.ignoreTestSources", false)
 
   /**
+   * Flag to control which agp version should be used for lint. Optional. Value should be a version
+   * key in `libs.versions.toml`,
+   */
+  public val lintVersionOverride: String?
+    get() = optionalStringProperty("sgp.lint.agpVersion")
+
+  /**
    * Flag to indicate whether this project is a test library (such as test utils, test fixtures,
    * etc).
    */
@@ -326,6 +333,14 @@ internal constructor(
   /** Flag to enable/disable Dagger KSP. */
   public val allowDaggerKsp: Boolean
     get() = booleanProperty("slack.ksp.allow-dagger")
+
+  /** Flag to connect SqlDelight sources to KSP. */
+  public val kspConnectSqlDelight: Boolean
+    get() = booleanProperty("sgp.ksp.connect.sqldelight")
+
+  /** Flag to connect ViewBinding sources to KSP. */
+  public val kspConnectViewBinding: Boolean
+    get() = booleanProperty("sgp.ksp.connect.viewbinding")
 
   /** Variants that should be disabled in a given subproject. */
   public val disabledVariants: String?
@@ -608,7 +623,7 @@ internal constructor(
    */
   public val anvilMode: AnvilMode
     get() =
-      resolver.stringValue("sgp.anvil.mode", defaultValue = AnvilMode.K1.name).let {
+      resolver.stringValue("sgp.anvil.mode", defaultValue = AnvilMode.K1_EMBEDDED.name).let {
         AnvilMode.valueOf(it.uppercase(Locale.US))
       }
 
