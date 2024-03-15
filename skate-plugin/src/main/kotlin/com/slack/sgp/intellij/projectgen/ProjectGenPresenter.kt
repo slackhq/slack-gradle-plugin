@@ -21,6 +21,12 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.intellij.ide.fileTemplates.FileTemplateManager
+import com.intellij.ide.fileTemplates.FileTemplateUtil
+import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.vfs.LocalFileSystem
+import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiManager
 import com.slack.circuit.runtime.presenter.Presenter
 import java.io.File
 import org.apache.commons.io.FileExistsException
@@ -32,11 +38,13 @@ import slack.tooling.projectgen.DividerElement
 import slack.tooling.projectgen.KotlinFeature
 import slack.tooling.projectgen.SectionElement
 import slack.tooling.projectgen.TextElement
+import java.util.*
 
 internal class ProjectGenPresenter(
   private val rootDir: String,
   private val onDismissDialog: () -> Unit,
   private val onSync: () -> Unit,
+  private val project: com.intellij.openapi.project.Project,
 ) : Presenter<ProjectGenScreen.State> {
   private val path =
     TextElement(
@@ -250,9 +258,10 @@ internal class ProjectGenPresenter(
     if (robolectric) {
       features += RobolectricFeature
     }
-
+    logger<ProjectGenPresenter>().info("IN HERERER GENERATING BEFORE IF")
+    logger<ProjectGenPresenter>().info(circuit.toString())
     if (circuit) {
-      features += CircuitFeature
+      features += CircuitFeature(packageName, project)
     }
 
     val buildFile = BuildFile(emptyList())

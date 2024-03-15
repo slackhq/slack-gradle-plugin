@@ -19,11 +19,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.awt.ComposePanel
+import com.intellij.ide.fileTemplates.FileTemplateManager
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.openapi.vfs.LocalFileSystem
+import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiManager
 import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.foundation.CircuitContent
 import com.slack.circuit.runtime.ui.ui
@@ -64,6 +69,12 @@ class ProjectGenWindow(private val currentProject: Project?, private val event: 
     }
     File("$rootDir/.projectgenlock").createNewFile()
 
+    if (currentProject == null) {
+      return
+    }
+
+
+
     val circuit = remember {
       Circuit.Builder()
         .addPresenterFactory { _, _, _ ->
@@ -71,6 +82,7 @@ class ProjectGenWindow(private val currentProject: Project?, private val event: 
             rootDir = rootDir,
             onDismissDialog = ::doOKAction,
             onSync = ::dismissDialogAndSync,
+            project = currentProject,
           )
         }
         .addUiFactory { _, _ ->
@@ -80,6 +92,7 @@ class ProjectGenWindow(private val currentProject: Project?, private val event: 
     }
     SlackDesktopTheme() { CircuitContent(ProjectGenScreen, circuit = circuit) }
   }
+
 
   /* Disable default OK and Cancel action button in Dialog window. */
   override fun createActions(): Array<Action> = emptyArray()
