@@ -35,6 +35,8 @@ group = "com.slack.intellij"
 repositories {
   mavenCentral()
   google()
+  maven("https://packages.jetbrains.team/maven/p/kpm/public/")
+  maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
 // Configure Gradle IntelliJ Plugin
@@ -45,6 +47,8 @@ intellij {
   plugins.add("org.jetbrains.kotlin")
   plugins.add("org.jetbrains.android")
 }
+
+kotlin { compilerOptions { optIn.add("kotlin.RequiresOptIn") } }
 
 fun isGitHash(hash: String): Boolean {
   if (hash.length != 40) {
@@ -105,19 +109,8 @@ kotlin {
   sourceSets {
     jvmMain {
       dependencies {
-        implementation(compose.animation)
-        implementation(compose.desktop.common)
-        implementation(compose.desktop.linux_arm64)
-        implementation(compose.desktop.linux_x64)
-        implementation(compose.desktop.macos_arm64)
-        implementation(compose.desktop.macos_x64)
-        implementation(compose.desktop.windows_x64)
-        implementation(compose.foundation)
-        implementation(compose.material)
-        implementation(compose.material3)
-        implementation(compose.ui)
         implementation(libs.circuit)
-        implementation(libs.gradlePlugins.compose)
+        implementation(libs.jewel.bridge232)
         implementation(libs.kaml)
         implementation(libs.kotlin.poet)
         implementation(libs.okhttp)
@@ -154,5 +147,14 @@ configurations
 
 dependencies {
   lintChecks(libs.composeLints)
+  // Do not bring in Material (we use Jewel) and Coroutines (the IDE has its own)
+  for (dep in listOf(compose.desktop.common, compose.desktop.linux_arm64, compose.desktop.linux_x64, compose.desktop.macos_arm64, compose.desktop.macos_x64, compose.desktop.windows_x64)) {
+    "jvmMainImplementation"(compose.desktop.common) {
+      exclude(group = "org.jetbrains.compose.material")
+      exclude(group = "org.jetbrains.kotlinx")
+    }
+  }
+  "jvmMainImplementation"(libs.circuit.foundation) { exclude(group = "org.jetbrains.kotlinx") }
   "jvmMainImplementation"(libs.bugsnag) { exclude(group = "org.slf4j") }
+  "jvmMainImplementation"(projects.tracing) { exclude(group = "org.jetbrains.kotlinx") }
 }
