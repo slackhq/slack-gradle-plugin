@@ -410,14 +410,17 @@ internal constructor(
   public val useOrchestrator: Boolean
     get() = booleanProperty("orchestrator")
 
+  public val robolectricCoreProject: Project
+    get() = project.project(robolectricCoreProjectPath)
+
   /**
    * Location for robolectric-core to be referenced by app. Temporary till we have a better solution
    * for "always add these" type of deps.
    *
    * Should be `:path:to:robolectric-core` format
    */
-  public val robolectricCoreProject: Project
-    get() = project.project(stringProperty("slack.location.robolectric-core"))
+  public val robolectricCoreProjectPath: String
+    get() = stringProperty("slack.location.robolectric-core")
 
   /**
    * Gradle path to a platform project to be referenced by other projects.
@@ -626,6 +629,14 @@ internal constructor(
       resolver.stringValue("sgp.anvil.mode", defaultValue = AnvilMode.K1_EMBEDDED.name).let {
         AnvilMode.valueOf(it.uppercase(Locale.US))
       }
+
+  /** Enables bazel file generation tasks */
+  public val enableBazelGen: Boolean
+    get() = resolver.booleanValue("sgp.bazel.enable", defaultValue = false)
+
+  /** Source for loaded bzl files. */
+  public val bazelRuleSource: Provider<String>
+    get() = resolver.optionalStringProvider("sgp.bazel.ruleSource", "@rules_kotlin//kotlin:jvm.bzl")
 
   /** Defines a required vendor for JDK toolchains. */
   public val jvmVendor: Provider<String>

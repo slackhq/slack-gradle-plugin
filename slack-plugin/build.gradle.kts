@@ -68,6 +68,7 @@ dependencies.constraints {
 
 dependencies {
   lintChecks(libs.gradleLints)
+
   api(platform(libs.okhttp.bom))
   api(libs.okhttp)
   // Better I/O
@@ -78,6 +79,7 @@ dependencies {
   implementation(libs.commonsText) { because("For access to its StringEscapeUtils") }
   implementation(libs.coroutines.core)
   implementation(libs.gradlePlugins.graphAssert) { because("To use in Gradle graphing APIs.") }
+  implementation(libs.grazelPlugin)
   implementation(libs.guava)
   // Graphing library with Betweenness Centrality algo for modularization score
   implementation(libs.jgrapht)
