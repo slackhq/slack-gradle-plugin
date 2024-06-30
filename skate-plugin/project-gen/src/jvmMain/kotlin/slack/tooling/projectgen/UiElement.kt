@@ -35,7 +35,11 @@ internal object DividerElement : UiElement {
 }
 
 @Immutable
-internal data class SectionElement(val title: String, val description: String) : UiElement {
+internal data class SectionElement(
+  val title: String,
+  val description: String,
+  val indentLevel: Int = 0,
+) : UiElement {
   override var isVisible: Boolean = true
 }
 
@@ -82,4 +86,14 @@ internal class TextElement(
   }
 
   override var isVisible: Boolean by mutableStateOf(initialVisibility)
+}
+
+internal class ExclusiveCheckboxElement(
+  initialValue: String,
+  val options: List<String>,
+  val indentLevel: Int = 0,
+  isVisible: Boolean = true,
+) : UiElement {
+  override var isVisible: Boolean by mutableStateOf(isVisible)
+  var selectedCheckbox by mutableStateOf(initialValue)
 }

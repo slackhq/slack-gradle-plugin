@@ -47,6 +47,12 @@ kotlin {
         implementation(libs.markdown)
       }
     }
+    jvmTest {
+      dependencies {
+        implementation(libs.junit)
+        implementation(libs.truth)
+      }
+    }
   }
 }
 

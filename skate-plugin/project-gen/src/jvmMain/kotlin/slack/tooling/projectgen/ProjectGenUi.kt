@@ -172,6 +172,9 @@ internal fun ProjectGen(state: ProjectGenScreen.State, modifier: Modifier = Modi
                 }
               }
             }
+            is ExclusiveCheckboxElement -> {
+              // Fill this in when project gen uses this ui component
+            }
           }
         }
       }
@@ -227,17 +230,19 @@ private fun PreviewFeature() {
 }
 
 @Composable
-private fun StatusDialog(
+fun StatusDialog(
   text: String,
   confirmButtonText: String,
   onQuit: () -> Unit,
   onConfirm: () -> Unit,
+  modifier: Modifier = Modifier,
 ) {
   // No M3 AlertDialog in compose-jb yet
   // https://github.com/JetBrains/compose-multiplatform/issues/2037
   Popup(alignment = Alignment.Center, onDismissRequest = { onQuit() }) {
     Box(
-      Modifier.width(600.dp)
+      modifier
+        .width(600.dp)
         .height(100.dp)
         .background(JewelTheme.globalColors.paneBackground)
         .border(1.5.dp, JewelTheme.globalColors.borders.disabled, RoundedCornerShape(8.dp))
