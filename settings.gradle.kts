@@ -183,6 +183,7 @@ rootProject.name = "slack-gradle-plugin"
 // Please keep these in alphabetical order!
 include(
   ":agp-handlers:agp-handler-api",
+  ":develocity-miner",
   ":skippy",
   ":sgp-common",
   ":skate-plugin",
